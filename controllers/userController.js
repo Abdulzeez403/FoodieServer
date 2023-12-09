@@ -100,7 +100,9 @@ const currentUser = async (req, res) => {
         }
         res.status(200).json({
             email: user.email,
-            name: user.name
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            address: user.address
         });
     } catch (error) {
         console.error('Error:', error);
