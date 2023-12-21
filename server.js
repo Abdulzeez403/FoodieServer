@@ -18,6 +18,7 @@ app.use("/api/", require('./Routes/restaurantRoutes'))
 app.use("/api/", require('./Routes/orderRoutes'))
 app.use("/api/", require('./Routes/reviewRoutes'))
 app.use("/api/", require('./Routes/menuRoutes'))
+app.use("/api", require("./Routes/cartRoutes"));
 
 
 MongodbConnect();
