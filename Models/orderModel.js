@@ -3,12 +3,13 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'foodieUser', required: true },
-    items: [{
-        menuItem: { type: Schema.Types.ObjectId, ref: 'MenuItem', required: true },
-        quantity: { type: Number, required: true },
-    }],
+    cart: { type: {}, required: true },
     totalAmount: { type: Number, required: true },
     status: { type: String, enum: ['Pending', 'Confirmed', 'Delivered'], default: 'Pending' },
-    // You can add more order-related fields as needed
+    updated: Date,
+    created: {
+        type: Date,
+        default: Date.now
+    }
 });
 module.exports = mongoose.model("Order", orderSchema);

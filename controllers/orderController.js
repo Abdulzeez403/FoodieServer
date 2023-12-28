@@ -1,41 +1,46 @@
 const OrderSchema = require('../Models/orderModel');
-const menuItemSchema = require("../Models/menuItemModel")
+const cartSchema = require("../Models/cartModel")
 
 // Controller functions
 const createOrder = async (req, res) => {
     try {
-        const { userId, items, totalAmount, status, } = req.body;
+        const { userId, totalAmount, status } = req.body;
 
-        // Ensure that each item in the `items` array has a `menuItem` field
-        if (items.some(item => !item.menuItem)) {
-            return res.status(400).json({
+        // Use findOne instead of find to get a single cart
+        const cart = await cartSchema.find({ userId });
+
+        if (!cart) {
+            // If cart is not found, return an error response
+            return res.status(404).json({
                 success: false,
-                error: 'Each item in the order must have a menuItem field.',
+                error: 'Cart not found for the specified userId',
             });
         }
 
-        // Fetch actual MenuItem documents for each item
-        const itemsWithMenuItems = await Promise.all(
-            items.map(async ({ menuItem, quantity }) => {
-                const menuId = await menuItemSchema.findById(menuItem);
-                return { menuItem: menuId, quantity };
-            })
-        );
         const order = new OrderSchema({
             userId,
-            items: itemsWithMenuItems,
+            cart,
             totalAmount,
             status,
         });
-        const createOrder = await order.save()
-        return res.json({ success: true, message: 'Order created successfully', data: createOrder });
+
+        const createdOrder = await order.save();
+
+        return res.json({
+            success: true,
+            message: 'Order created successfully',
+            data: createdOrder,
+        });
+
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             success: false,
-            error: error.message
+            error: 'Internal Server Error',
         });
     }
 };
+
 
 const getOrders = async (req, res) => {
     try {
@@ -58,8 +63,9 @@ const getUserOrders = async (req, res) => {
 };
 
 const getOrderById = async (req, res) => {
+    const orderId = req.params.orderId;
     try {
-        const order = await OrderSchema.findById(req.params.orderId);
+        const order = await OrderSchema.findById(orderId);
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }

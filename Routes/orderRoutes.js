@@ -1,14 +1,16 @@
 const express = require('express');
-const orderController = require('../controllers/orderController');
+const { createOrder, getOrders, getUserOrders, getOrderById, updateOrder, deleteOrder } = require('../controllers/orderController');
 
 const router = express.Router();
+router.get('/orders/:userId', getUserOrders); // Corrected route definition
+
+// Use router.route for concise route definitions with the same path
+router.route("/order/:orderId")
+    .get(getOrderById)
+    .put(updateOrder)
+    .delete(deleteOrder);
 
 // Order routes
-router.post('/orders', orderController.createOrder);
-router.get('/orders', orderController.getOrders);
-router.get('/orders/:userId', orderController.getUserOrders);
-router.get('/orders/:orderId', orderController.getOrderById);
-router.put('/orders/:orderId', orderController.updateOrder);
-router.delete('/orders/:orderId', orderController.deleteOrder);
-
+router.post('/orders', createOrder);
+router.get('/orders', getOrders);
 module.exports = router;

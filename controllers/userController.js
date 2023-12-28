@@ -10,16 +10,15 @@ const createUser = async (req, res) => {
         if (User) {
             res.status(404).send("User already exit!");
         }
-        const user = await UserSchema.create({
+        const user = new UserSchema({
             name,
             email,
             password,
             address,
             phoneNumber
         });
-        // await user.save()
-
-        res.json(user);
+        await user.save()
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -28,16 +27,32 @@ const createUser = async (req, res) => {
 const getUsers = async (req, res) => {
     try {
         const users = await UserSchema.find();
-        res.json(users);
+        res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 const updateUser = async (req, res) => {
+    const { name,
+        email,
+        password,
+        address,
+        phoneNumber } = req.body
+    const { id } = req.params;
     try {
-        const user = await UserSchema.findByIdAndUpdate(req.params.userId, req.body, { new: true });
-        res.json(user);
+        const user = await UserSchema.findByIdAndUpdate(id, {
+            name,
+            email,
+            password,
+            address,
+            phoneNumber
+        }, { new: true });
+        // if (!user) {
+        //     return res.status(404).json({ error: 'User not found' });
+        // }
+        res.status(200).json({ message: "success", data: user });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
