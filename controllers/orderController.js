@@ -5,20 +5,19 @@ const cartSchema = require("../Models/cartModel")
 const createOrder = async (req, res) => {
     try {
         const { userId, totalAmount, status } = req.body;
-
-        // Use findOne instead of find to get a single cart
         const cart = await cartSchema.find({ userId });
-
         if (!cart) {
-            // If cart is not found, return an error response
             return res.status(404).json({
                 success: false,
                 error: 'Cart not found for the specified userId',
             });
         }
+        const orderCount = await OrderSchema.countDocuments();
+        const orderName = `FD0${orderCount + 1}`;
 
         const order = new OrderSchema({
             userId,
+            name: orderName,
             cart,
             totalAmount,
             status,
