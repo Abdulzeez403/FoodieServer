@@ -3,12 +3,13 @@ const { mapFiles } = require("../Middlewares/file")
 
 // Controller functions
 const createMenuItem = async (req, res) => {
+
     try {
         const { name, description, images, price, soldout } = req.body;
-        const { userId } = req.params;
+        // const { userId } = req.params;
         const fls = await mapFiles(images);
         const menuItem = await MenuItem.create({
-            userId,
+            // userId,
             name,
             description,
             images: fls,

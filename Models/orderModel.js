@@ -6,7 +6,11 @@ const orderSchema = new Schema({
     name: { type: String, required: true },
     cart: { type: {}, required: true },
     totalAmount: { type: Number, required: true },
-    status: { type: String, enum: ['Pending', 'Confirmed', 'Delivered'], default: 'Pending' },
+    status: {
+        type: String,
+        enum: ['Pending', 'Confirmed', 'Delivered', 'Rejected'],
+        default: 'Pending'
+    },
     updated: Date,
     created: {
         type: Date,
