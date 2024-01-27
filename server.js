@@ -13,7 +13,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: false }));
 app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(cors({
-    origin: ["http://localhost:3000", "http://localhost:5000", "http://localhost:3001"],
+    origin: ["https://foodie-web-nine.vercel.app/", "https://foodieserver.onrender.com/", "http://localhost:3001"],
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true
 }));
