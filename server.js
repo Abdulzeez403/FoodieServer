@@ -12,11 +12,25 @@ app.use(logger('dev'));
 app.use(express.urlencoded({ limit: '50mb', extended: false }));
 app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
-app.use(cors({
-    origin: ["https://foodie-web-nine.vercel.app/", "https://foodieserver.onrender.com/", "http://localhost:3001"],
+const allowedOrigins = [
+    "https://foodie-web-nine.vercel.app",
+    "https:/foodieserver.onrender.com",
+    "http://localhost:3001"];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
+
 
 app.use("/api/", require('./Routes/userRoutes'))
 app.use("/api/", require('./Routes/restaurantRoutes'))
