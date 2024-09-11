@@ -1,16 +1,27 @@
 const mongoose = require("mongoose");
 
-//connect to the mongodb
 const dbase = async () => {
-  const MONGO_URL = "mongodb+srv://BlogUser:12345@cluster0.aulb9dq.mongodb.net/?retryWrites=true&w=majority"
-  mongoose
-    .connect(MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  try {
+    const MONGO_URL = process.env.MONGO_URL;
+
+    if (!MONGO_URL) {
+      throw new Error("MONGO_URL is not defined in environment variables");
+    }
+
+    const options = {
+      connectTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 5000,
+    };
+
+    await mongoose.connect(MONGO_URL, options);
+    console.log("Connected to MongoDB successfully");
+  } catch (err) {
+    // Properly log the error message
+    console.error(`Error connecting to MongoDB: ${err.message}`);
+
+    // Optionally, implement a retry mechanism if needed
+    setTimeout(dbase, 5000); // Retry connection after 5 seconds
+  }
 };
 
 module.exports = dbase;
